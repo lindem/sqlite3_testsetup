@@ -1,0 +1,42 @@
+<.header>
+  Listing Thing
+  <:actions>
+    <.link patch={~p"/thing/new"}>
+      <.button>New Thing</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="thing"
+  rows={@streams.thing_collection}
+  row_click={fn {_id, thing} -> JS.navigate(~p"/thing/#{thing}") end}
+>
+  <:col :let={{_id, thing}} label="Thingvalue"><%= thing.thingvalue %></:col>
+  <:col :let={{_id, thing}} label="Thingdescription"><%= thing.thingdescription %></:col>
+  <:action :let={{_id, thing}}>
+    <div class="sr-only">
+      <.link navigate={~p"/thing/#{thing}"}>Show</.link>
+    </div>
+    <.link patch={~p"/thing/#{thing}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, thing}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: thing.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="thing-modal" show on_cancel={JS.patch(~p"/thing")}>
+  <.live_component
+    module={Sqlite3TestsetupWeb.ThingLive.FormComponent}
+    id={@thing.id || :new}
+    title={@page_title}
+    action={@live_action}
+    thing={@thing}
+    patch={~p"/thing"}
+  />
+</.modal>

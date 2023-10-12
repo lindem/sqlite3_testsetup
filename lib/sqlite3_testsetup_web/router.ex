@@ -18,6 +18,12 @@ defmodule Sqlite3TestsetupWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/thing", ThingLive.Index, :index
+    live "/thing/new", ThingLive.Index, :new
+    live "/thing/:id/edit", ThingLive.Index, :edit
+
+    live "/thing/:id", ThingLive.Show, :show
+    live "/thing/:id/show/edit", ThingLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
